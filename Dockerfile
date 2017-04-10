@@ -9,4 +9,6 @@ RUN npm install
 
 COPY app.js $APP_DIR/
 
+ENV NODE_ENV=production
+
 CMD ["node", "./app.js"]
