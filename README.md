@@ -1,8 +1,12 @@
-# Firelastic
+# Firelastic  
+[![Docker Build](https://img.shields.io/docker/automated/procoders/firelastic.svg)](https://hub.docker.com/r/procoders/firelastic/)
+[![MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/procoders/firelastic/master/LICENSE)
+[![ProCoders](https://img.shields.io/badge/powered%20by-ProCoders.tech-blue.svg?colorB=484848)](http://procoders.tech/)
 
 It syncs Firebase with Elasticsearch
 
-## How to use via 
+## How to use 
+
 
 ### Using with docker
 ```
