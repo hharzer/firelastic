@@ -1,0 +1,29 @@
+{
+  "name": "firelastic",
+  "version": "1.0.0",
+  "description": "Firebase to ElasticSearch syncing tool",
+  "main": "app.js",
+  "scripts": {
+    "app": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/procoders/firelastic.git"
+  },
+  "keywords": [
+    "firebase",
+    "elastic",
+    "syncing"
+  ],
+  "author": "Oleg Kopachovets",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/procoders/firelastic/issues"
+  },
+  "homepage": "https://github.com/procoders/firelastic#readme",
+  "dependencies": {
+    "dotenv": "^4.0.0",
+    "firebase": "^3.7.5",
+    "quiver-firebase-search": "^1.0.6"
+  }
+}
