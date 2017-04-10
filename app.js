@@ -38,8 +38,6 @@ var firebaseSearch = new FirebaseSearch( firebase.database().ref(process.env.FIR
  * increase the timeout to 5s
  * it's reuired for muking build() function work
  */
-    console.log(FirebaseSearch.prototype.getLastKey);
-
 firebaseSearch.getLastKey = function() {
 return new Promise(function(resolve, reject) {
     var ref = firebaseSearch.ref.orderByKey().limitToLast(1);
