@@ -5,30 +5,6 @@ var firebase = require('firebase');
 
 require('dotenv').config()
 
-/**
- * Monkey path to FirebaseSearch package
- * increase the timeout to 5s
- * it's reuired for muking build() function work
- */
-FirebaseSearch.getLastKey = function() {
-return new Promise(function(resolve, reject) {
-    var ref = firebaseSearch.ref.orderByKey().limitToLast(1);
-    var handler = function(snap) {
-        ref.off('child_added', handler);
-        resolve(snap.key);
-    };
-    var timer = setTimeout(
-        function() {
-            // Must be empty if no response in 1000 millis
-            ref.off('child_added', handler);
-            reject('Timeout! Could be an empty Firebase collection.');
-        },
-        5000
-    );
-    ref.on('child_added', handler);
-});
-};
-
 var firebaseConfig = {};
 
 if (fs.existsSync('./service-account.json')){
@@ -56,6 +32,32 @@ var elasticsearchConfig = {
 var firebaseSearch = new FirebaseSearch( firebase.database().ref(process.env.FIREBASE_REF) , {
   elasticsearch: elasticsearchConfig,
 });
+
+/**
+ * Monkey path to FirebaseSearch package
+ * increase the timeout to 5s
+ * it's reuired for muking build() function work
+ */
+    console.log(FirebaseSearch.prototype.getLastKey);
+
+firebaseSearch.getLastKey = function() {
+return new Promise(function(resolve, reject) {
+    var ref = firebaseSearch.ref.orderByKey().limitToLast(1);
+    var handler = function(snap) {
+        ref.off('child_added', handler);
+        resolve(snap.key);
+    };
+    var timer = setTimeout(
+        function() {
+            // Must be empty if no response in 1000 millis
+            ref.off('child_added', handler);
+            reject('Timeout! Could be an empty Firebase collection.');
+        },
+        5000
+    );
+    ref.on('child_added', handler);
+});
+};
 
 console.log('Launch sync microservice from ' + firebaseConfig.databaseURL + '/' + process.env.FIREBASE_REF + ' to ' + elasticsearchConfig.host + '/' + elasticsearchConfig.index);
 
