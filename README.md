@@ -19,6 +19,7 @@ docker run \
     -e FIREBASE_REF=<...> \
     -e ES_ENDPOINT=<...> \
     -e ES_INDEX=<...> \
+    -e ES_TYPE=<...> \
     procoders/firelastic
 ```
 

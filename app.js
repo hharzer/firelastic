@@ -31,7 +31,7 @@ var elasticsearchConfig = {
 
 var firebaseSearch = new FirebaseSearch( firebase.database().ref(process.env.FIREBASE_REF) , {
   elasticsearch: elasticsearchConfig,
-});
+}, process.env.ES_TYPE);
 
 /**
  * Monkey path to FirebaseSearch package
