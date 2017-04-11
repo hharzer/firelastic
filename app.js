@@ -60,16 +60,24 @@ return new Promise(function(resolve, reject) {
 console.log('Launch sync microservice from ' + firebaseConfig.databaseURL + '/' + process.env.FIREBASE_REF + ' to ' + elasticsearchConfig.host + '/' + elasticsearchConfig.index);
 
 firebaseSearch.elasticsearch.indices.exists().then(function(exists) {
-    if (exists) {
-        firebaseSearch.elasticsearch.firebase.start().then(function () {
-            console.log('Syncing Elasticsearch with Firebase is ON-AIR ...');
-        })
-    } else {
-        console.log('ElasticSearch collection does not exists, I need to create it first and rebuild');
-        firebaseSearch.elasticsearch.indices.create().then( function () {
-            firebaseSearch.elasticsearch.firebase.build().then(function () {
-                console.log('Index has been created, built and synced with current Firebase state.');
+       var countCheck = exists ? firebaseSearch.elasticsearch.client.count({index: elasticsearchConfig.index}) : 
+                        new Promise(function(resolve, reject) { resolve( {count: 0} ) } );
+       countCheck.then( function (res) {
+        if (exists && res.count > 0) {
+            firebaseSearch.elasticsearch.firebase.start().then(function () {
+                console.log('Syncing Elasticsearch with Firebase is ON-AIR ...');
             })
-        });
-    }
+        } else {
+            console.log('ElasticSearch collection does not exists, I need to create it first and rebuild');
+            buildCollection = function() {
+                firebaseSearch.elasticsearch.firebase.build().then(function () {
+                    console.log('Index has been created, built and synced with current Firebase state.');
+                })
+            } 
+            if (exists)
+                buildCollection()
+            else
+                firebaseSearch.elasticsearch.indices.create().then( function () {buildCollection()});
+        }
+    })
 });
