@@ -27,7 +27,7 @@ docker run \
 
 At services section of docker-compose.yml
 ```
-  flashlight:
+  firelastic:
     image: fprocoders/firelastic
     volumes:
       - ./.env:/opt/app/.env
@@ -40,4 +40,4 @@ For Firebase-releated questions, try the mailing list.
 
 ## License
 
-MIT LICENSE Copyright © 2017 Firebase opensource@firebase.com
+MIT LICENSE Copyright © 2017
