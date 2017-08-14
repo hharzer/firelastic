@@ -1,14 +1,63 @@
-# Firelastic  
+# Firelastic
 [![Docker Build](https://img.shields.io/docker/automated/procoders/firelastic.svg)](https://hub.docker.com/r/procoders/firelastic/)
 [![MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/procoders/firelastic/master/LICENSE)
 [![ProCoders](https://img.shields.io/badge/powered%20by-ProCoders.tech-blue.svg?colorB=484848)](http://procoders.tech/)
 
 It syncs Firebase with Elasticsearch
 
-## How to use 
+## Configuration of Firelastic
 
+The firelastic script requires the configuration of a Firebase account and an Elasticsearch cluster.
+
+### Firebase Account
+
+The Firebase account information should be passed into the container via the environment variables.
+
+```
+FIREBASE_MESSAGING_SENDER_ID=1111111111
+FIREBASE_API_KEY=secret
+FIREBASE_AUTH_DOMAIN=example.firebaseapp.com
+FIREBASE_DATABASE_URL=https://example.firebaseio.com
+FIREBASE_STORAGE_BUCKET=example.appspot.com
+```
+
+Finally, the Firebase reference that will be synchronized with Elasticsearch has to be set with the variable.
+
+```
+FIREBASE_REF=rooms
+```
+
+### Elasticsearch Cluster
+
+The Elasticsearch cluster requires as minimum configuration the hosts, index, and type.
+
+```
+ES_HOSTS=localhost:9200
+ES_INDEX=rooms
+ES_TYPE=room
+```
+
+To ensure that the Elasticsearch client is compatible with the version of the Elasticsearch cluster set the variable.
+
+```
+ES_VERSION=5.5
+```
+
+In case the Elasticsearch cluster requires HTTP Authentication use the variables.
+
+```
+ES_USER=admin
+ES_PASSWORD=secret
+```
+
+> The full reference on the Elasticsearch client can be found on the [website](https://www.elastic.co/guide/en/elasticsearch/client/javascript-api/current/api-reference.html)
+
+## How to use
 
 ### Using with docker
+
+To run the container without dotenv and docker-compose use the docker command:
+
 ```
 docker run \
     -e FIREBASE_API_KEY=<...>  \
@@ -25,7 +74,8 @@ docker run \
 
 ### Using with docker-compose
 
-At services section of docker-compose.yml
+At services section of docker-compose.yml add the firelastic service as follows:
+
 ```
   firelastic:
     image: fprocoders/firelastic
