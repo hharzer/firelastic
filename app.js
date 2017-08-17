@@ -1,3 +1,4 @@
+const intel = require('intel');
 const path = require('path');
 const fs = require('fs');
 const _ = require('lodash');
@@ -6,6 +7,7 @@ const firebase = require('firebase');
 const elasticsearch = require('elasticsearch');
 
 require('dotenv').config();
+intel.setLevel(intel.INFO);
 
 var firebaseConfig = {};
 
@@ -14,6 +16,7 @@ if (fs.existsSync('./service-account.json')) {
         databaseURL: process.env.FIREBASE_DATABASE_URL,
         serviceAccount: './service-account.json'
     };
+    intel.debug('Firebase configuration from service-account.json.');
 } else {
     firebaseConfig = {
         databaseURL: process.env.FIREBASE_DATABASE_URL,
@@ -22,6 +25,7 @@ if (fs.existsSync('./service-account.json')) {
         storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
         messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
     };
+    intel.debug('Firebase configuration from process environment.');
 }
 
 firebase.initializeApp(firebaseConfig);
@@ -44,13 +48,14 @@ var firebaseSearch = new FirebaseSearch(firebase.database().ref(process.env.FIRE
  */
 if (process.env.ES_VERSION) {
     elasticsearchConfig.apiVersion = process.env.ES_VERSION;
+    intel.debug('Elasticsearch client version is "%s".', elasticsearchConfig.appVersion);
 } else {
-    console.warn('The Elasticsearch API version is not given via ES_VERSION! The script will default to some random version of Elasticsearch.');
+    intel.warn('The Elasticsearch API version is not given via ES_VERSION! The script will default to some random version of Elasticsearch.');
 }
 
 if (process.env.ES_USER && process.env.ES_PASSWORD) {
     elasticsearchConfig.httpAuth = process.env.ES_USER+':'+process.env.ES_PASSWORD;
-    console.log('Elasticsearch client will provide httpAuth credentials.');
+    intel.debug('Elasticsearch client will provide httpAuth credentials.');
 }
 
 firebaseSearch.elasticsearch.client = elasticsearch.Client(elasticsearchConfig);
@@ -83,37 +88,34 @@ return new Promise(function(resolve, reject) {
  * Setup log events for each elasticsearch event emmited by firebaseSearch.
  */
 firebaseSearch.on('elasticsearch_child_added', function(record) {
-    console.log('Record added to Elasticsearch', record);
+    intel.info('Record added to Elasticsearch: %O', record);
 });
 firebaseSearch.on('elasticsearch_child_changed', function(record) {
-    console.log('Record changed in Firebase', record);
+    intel.info('Record changed in Firebase: %O', record);
 });
 firebaseSearch.on('elasticsearch_child_removed', function(record) {
-    console.log('Record removed in Elasticsearch', record);
+    intel.info('Record removed in Elasticsearch: %O', record);
 });
 
 /**
  * Main application function runs firebaseSearch against the index after resync!
  */
-console.log('Launch sync microservice from ' + firebaseConfig.databaseURL + '/' + process.env.FIREBASE_REF + ' to ' + elasticsearchConfig.host + '/' + elasticsearchConfig.index);
+intel.info('Launch sync microservice from ' + firebaseConfig.databaseURL + '/' + process.env.FIREBASE_REF + ' to ' + elasticsearchConfig.host + '/' + elasticsearchConfig.index);
 firebaseSearch.elasticsearch.indices.exists().then(function(exists) {
     var countCheck = exists ? firebaseSearch.elasticsearch.client.count({index: elasticsearchConfig.index}) : new Promise(function(resolve, reject) { resolve( {count: 0} ), reject( {reason: 'no index'} ) } );
     countCheck.then(function(res) {
         if (exists && res.count > 0) {
             firebaseSearch.elasticsearch.firebase.start().then(function () {
-                console.log('Syncing Elasticsearch with Firebase is ON-AIR ...');
+                intel.info('Syncing Elasticsearch with Firebase is ON-AIR ...');
             });
         } else {
-            console.log('The ElasticSearch collection does not exists.');
-            console.log('I need to create it first and rebuild.');
+            intel.info('The ElasticSearch collection does not exists.');
+            intel.info('I need to create it first and rebuild.');
             buildCollection = function() {
                 firebaseSearch.elasticsearch.firebase.build().then(function () {
-                    console.log('Index has been created, built, and synced with current Firebase state.');
+                    intel.info('Index has been created, built, and synced with current Firebase state.');
                 }, function(reject) {
-                    console.log('################################################################################')
-                    console.log('#                    ELASTIC SEARCH FIREBASE BUILD FAILED                      #')
-                    console.log('################################################################################')
-                    console.log('' + JSON.stringify(reject));
+                    intel.error('ELASTIC SEARCH FIREBASE BUILD FAILED: %O', reject);
                 });
             };
             if (exists) {
@@ -122,22 +124,13 @@ firebaseSearch.elasticsearch.indices.exists().then(function(exists) {
                 firebaseSearch.elasticsearch.indices.create().then(function() {
                     buildCollection();
                 }, function(reject) {
-                    console.log('################################################################################')
-                    console.log('#                     ELASTIC SEARCH CREATE INDEX FAILED                       #')
-                    console.log('################################################################################')
-                    console.log('' + JSON.stringify(reject));
+                    intel.error('ELASTIC SEARCH CREATE INDEX FAILED: %O', reject);
                 });
             }
         }
     }, function(reject) {
-        console.log('################################################################################')
-        console.log('#                     ELASTIC SEARCH COUNT QUERY FAILED                        #')
-        console.log('################################################################################')
-        console.log('' + JSON.stringify(reject));
+        intel.error('ELASTIC SEARCH COUNT QUERY FAILED: %O', reject);
     });
 }, function(reject) {
-    console.log('################################################################################')
-    console.log('#                    ELASTIC SEARCH EXISTS QUERY FAILED                        #')
-    console.log('################################################################################')
-    console.log('' + JSON.stringify(reject));
+    intel.error('ELASTIC SEARCH EXISTS QUERY FAILED: %O', reject);
 });

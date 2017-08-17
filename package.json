@@ -23,6 +23,7 @@
   "homepage": "https://github.com/procoders/firelastic#readme",
   "dependencies": {
     "dotenv": "^4.0.0",
+    "intel": "^1.2.0",
     "lodash": "^4.17.4",
     "firebase": "^3.7.5",
     "elasticsearch": "^13.3.1",

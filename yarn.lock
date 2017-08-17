@@ -46,7 +46,7 @@ buffer-equal-constant-time@1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/buffer-equal-constant-time/-/buffer-equal-constant-time-1.0.1.tgz#f8e71132f7ffe6e01a5c9697a4c6f3e48d5cc819"
 
-chalk@^1.0.0:
+chalk@^1.0.0, chalk@^1.1.0:
   version "1.1.3"
   resolved "https://registry.yarnpkg.com/chalk/-/chalk-1.1.3.tgz#a8115c55e4a702fe4d150abd3872822a7e09fc98"
   dependencies:
@@ -55,6 +55,10 @@ chalk@^1.0.0:
     has-ansi "^2.0.0"
     strip-ansi "^3.0.0"
     supports-color "^2.0.0"
+
+dbug@~0.4.2:
+  version "0.4.2"
+  resolved "https://registry.yarnpkg.com/dbug/-/dbug-0.4.2.tgz#32b4b3105e8861043a6f9ac755d80e542d365b31"
 
 debug@2.3.3:
   version "2.3.3"
@@ -170,6 +174,17 @@ inherits@^2.0.1, inherits@~2.0.0:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/inherits/-/inherits-2.0.3.tgz#633c2c83e3da42a502f52466022480f4208261de"
 
+intel@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/intel/-/intel-1.2.0.tgz#11d1147eb6b3f4582bdf5337b37d541584e9e41e"
+  dependencies:
+    chalk "^1.1.0"
+    dbug "~0.4.2"
+    stack-trace "~0.0.9"
+    strftime "~0.10.0"
+    symbol "~0.3.1"
+    utcstring "~0.1.0"
+
 isarray@^2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/isarray/-/isarray-2.0.1.tgz#a37d94ed9cda2d59865c9f76fe596ee1f338741e"
@@ -246,7 +261,7 @@ lodash@^3.10.0:
   version "3.10.1"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-3.10.1.tgz#5bf45e8e49ba4189e17d482789dfd15bd140b7b6"
 
-lodash@^4.14.1:
+lodash@^4.14.1, lodash@^4.17.4:
   version "4.17.4"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.4.tgz#78203a4d1c328ae1d86dca6460e369b57f4055ae"
 
@@ -316,6 +331,14 @@ semver@^5.1.0:
   version "5.3.0"
   resolved "https://registry.yarnpkg.com/semver/-/semver-5.3.0.tgz#9b2ce5d3de02d17c6012ad326aa6b4d0cf54f94f"
 
+stack-trace@~0.0.9:
+  version "0.0.10"
+  resolved "https://registry.yarnpkg.com/stack-trace/-/stack-trace-0.0.10.tgz#547c70b347e8d32b4e108ea1a2a159e5fdde19c0"
+
+strftime@~0.10.0:
+  version "0.10.0"
+  resolved "https://registry.yarnpkg.com/strftime/-/strftime-0.10.0.tgz#b3f0fa419295202a5a289f6d6be9f4909a617193"
+
 strip-ansi@^3.0.0:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/strip-ansi/-/strip-ansi-3.0.1.tgz#6a385fb8853d952d5ff05d0e8aaf94278dc63dcf"
@@ -325,6 +348,10 @@ strip-ansi@^3.0.0:
 supports-color@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/supports-color/-/supports-color-2.0.0.tgz#535d045ce6b6363fa40117084629995e9df324c7"
+
+symbol@~0.3.1:
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/symbol/-/symbol-0.3.1.tgz#b6f9a900d496a57f02408f22198c109dda063041"
 
 through@~2.3.4:
   version "2.3.8"
@@ -339,6 +366,10 @@ topo@1.x.x:
 tunnel-agent@^0.4.3:
   version "0.4.3"
   resolved "https://registry.yarnpkg.com/tunnel-agent/-/tunnel-agent-0.4.3.tgz#6373db76909fe570e08d73583365ed828a74eeeb"
+
+utcstring@~0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/utcstring/-/utcstring-0.1.0.tgz#430fd510ab7fc95b5d5910c902d79880c208436b"
 
 websocket-driver@>=0.5.1:
   version "0.6.5"
