@@ -97,40 +97,36 @@ firebaseSearch.on('elasticsearch_child_removed', function(record) {
     intel.info('Record removed in Elasticsearch: %O', record);
 });
 
+var startMonitoredSync = function () {
+    firebaseSearch.elasticsearch.firebase.start().then(function () {
+        intel.info('FIREBASE SEARCH Syncing Elasticsearch with Firebase is ON-AIR ...');
+    }, function(rejection) {
+        intel.error('FIREBASE SEARCH START FAILED: %O', rejection);
+    }).catch(function (error) {
+        intel.error('FIREBASE SEARCH SYNC ERROR: %O', error);
+    });
+}
+
 /**
  * Main application function runs firebaseSearch against the index after resync!
  */
 intel.info('Launch sync microservice from ' + firebaseConfig.databaseURL + '/' + process.env.FIREBASE_REF + ' to ' + elasticsearchConfig.host + '/' + elasticsearchConfig.index);
-firebaseSearch.elasticsearch.indices.exists().then(function(exists) {
-    var countCheck = exists ? firebaseSearch.elasticsearch.client.count({index: elasticsearchConfig.index}) : new Promise(function(resolve, reject) { resolve( {count: 0} ), reject( {reason: 'no index'} ) } );
-    countCheck.then(function(res) {
-        if (exists && res.count > 0) {
-            firebaseSearch.elasticsearch.firebase.start().then(function () {
-                intel.info('Syncing Elasticsearch with Firebase is ON-AIR ...');
-            });
-        } else {
-            intel.info('The ElasticSearch collection does not exists.');
-            intel.info('I need to create it first and rebuild.');
-            buildCollection = function() {
-                firebaseSearch.elasticsearch.firebase.build().then(function () {
-                    intel.info('Index has been created, built, and synced with current Firebase state.');
-                }, function(reject) {
-                    intel.error('ELASTIC SEARCH FIREBASE BUILD FAILED: %O', reject);
-                });
-            };
-            if (exists) {
-                buildCollection();
+firebaseSearch.elasticsearch.indices.ensure().then(function () {
+    firebaseSearch.elasticsearch.client.count({index: elasticsearchConfig.index}).then(function(response) {
+            if (response.count > 0) {
+                startMonitoredSync();
             } else {
-                firebaseSearch.elasticsearch.indices.create().then(function() {
-                    buildCollection();
-                }, function(reject) {
-                    intel.error('ELASTIC SEARCH CREATE INDEX FAILED: %O', reject);
+                intel.info('The ElasticSearch collection does not contain data.');
+                firebaseSearch.elasticsearch.firebase.build().then(function () {
+                    intel.info('Collection has been synced with current Firebase state.');
+                    startMonitoredSync();
+                }, function(rejection) {
+                    intel.error('ELASTICSEARCH FIREBASE BUILD FAILED: %O', rejection);
                 });
             }
-        }
-    }, function(reject) {
-        intel.error('ELASTIC SEARCH COUNT QUERY FAILED: %O', reject);
+    }, function(rejection) {
+        intel.error('ELASTICSEARCH COUNT QUERY FAILED: %O', rejection);
     });
-}, function(reject) {
-    intel.error('ELASTIC SEARCH EXISTS QUERY FAILED: %O', reject);
+}, function(rejection) {
+    intel.error('ELASTICSEARCH EXISTS QUERY OR CREATE FAILED: %O', rejection);
 });
