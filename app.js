@@ -109,7 +109,7 @@ var startMonitoredSync = function () {
     */
     var additionalConfiguration = {
         added: { /* settings passed into elasticsearch client create function */ },
-        changed: { retryOnConflict: 1, _source: 'false', refresh: 'false' },
+        changed: { retryOnConflict: 1, _source: false, refresh: 'false' },
         deleted: { /* settings passed into elasticsearch client delete function  */ }
     };
 
