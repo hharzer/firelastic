@@ -98,7 +98,22 @@ firebaseSearch.on('elasticsearch_child_removed', function(record) {
 });
 
 var startMonitoredSync = function () {
-    firebaseSearch.elasticsearch.firebase.start().then(function () {
+    /**
+    * Elasticsearch configuration with optimizations for faster update operations.
+    * NOTE: With these settings changes are NOT visible in search!
+    *
+    * This feature was introduced through the PR:
+    * https://github.com/deltaepsilon/firebase-search/pull/7/files
+    * The complete list of possible options are docmented here:
+    * https://www.elastic.co/guide/en/elasticsearch/client/javascript-api/current/api-reference.html#api-update
+    */
+    var additionalConfiguration = {
+        added: { /* settings passed into elasticsearch client create function */ },
+        changed: { retryOnConflict: 1, _source: false, refresh: 'false' },
+        deleted: { /* settings passed into elasticsearch client delete function  */ }
+    };
+
+    firebaseSearch.elasticsearch.firebase.start(additionalConfiguration).then(function () {
         intel.info('FIREBASE SEARCH Syncing Elasticsearch with Firebase is ON-AIR ...');
     }, function(rejection) {
         intel.error('FIREBASE SEARCH START FAILED: %O', rejection);
