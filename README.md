@@ -91,3 +91,14 @@ For Firebase-releated questions, try the mailing list.
 ## License
 
 MIT LICENSE Copyright © 2017
+
+## Authors
+
+[Procoders.TECH](https://procoders.tech)
+
+We gear IT up!
+
+> Procoders mission is to ship meaningful code, all our partners come from referrals, and our pricing model is transparent and fair. Drop us a line and let’s start a conversation right now. 
+
+[![](https://www.procoders.tech/art/pro-powered.png)](http://procoders.tech/)
+
